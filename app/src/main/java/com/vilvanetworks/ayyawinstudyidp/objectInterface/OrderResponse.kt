@@ -1,0 +1,57 @@
+package com.vilvanetworks.ayyawinstudyidp.objectInterface
+
+
+data class OrderResponse(
+    val statuscode: Int,
+    val success: Boolean,
+    val message: String,
+    val total_orders: Int,
+    val current_page: Int,
+    val page_count: Int,
+    val perpage: Int,
+    val data: List<Order>
+)
+
+data class Order(
+    val id: Int,
+    val storeid: Int,
+    val order_id: String,
+    val order_status: Int,
+    val user_id: Int,
+    val name: String,
+    val mobile_prefix: String?,
+    val mobile: String,
+    val currency: String,
+    val is_wallet: Int,
+    val amt: Int,
+    val totalamt: Int,
+    val wallet_used: Int,
+    val deliverychg: Int?,
+    val cod_charge: Int,
+    val payment_status: String,
+    val payment_date: String?,
+    val address_id: String?,
+    val deliveryaddress: String,
+    val testing_column: String?,
+    val cartinfodata: String,
+    val inv_number: String?,
+    val product_ids: String?,
+    val referral: String,
+    val shipping_method: String?,
+    val payment_method: String?,
+    val payment_id: String?,
+    val ref_no: String?,
+    val note: String?,
+    val coupon_code: String?,
+    val cashback_id: String?,
+    val discount: Int,
+    val migrated: Int?,
+    val record_date: String,
+    val created_at: String,
+    val updated_at: String,
+    val tracking_awb: String?,
+    val tracking_courier: String?,
+    val shipped_at: String?,
+    val delivered_at: String?,
+    val updated_via: String?
+)
