@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.vilvanetworks.ayyawinstudyidp.view.*
+import de.alexander13oster.easycomposebarcodescanner.CameraScreen
 
 @Composable
 fun Navigation(paymentsuccss: Boolean = false) {
@@ -22,6 +23,16 @@ fun Navigation(paymentsuccss: Boolean = false) {
         composable(Screen.LoginScreen.route) {
             LoginScreen(navController = navController)
         }
+
+        composable(Screen.BarcodeCamerScreen.route) {
+            CameraScreen(navController = navController)
+        }
+
+        composable(Screen.ToShipScreen.route) {
+            ToShipScreen(navController = navController)
+        }
+
+
 
         composable(Screen.AddressDetails.route, arguments = listOf(navArgument("mobile") { type = NavType.StringType})) {backStackEntry ->
             val mobile = backStackEntry.arguments?.getString("mobile")

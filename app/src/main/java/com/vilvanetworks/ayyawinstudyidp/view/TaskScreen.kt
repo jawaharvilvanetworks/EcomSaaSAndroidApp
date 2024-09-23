@@ -106,16 +106,38 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.mlkit.vision.barcode.Barcode
+import androidx.compose.ui.window.Dialog
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import com.vilvanetworks.ayyawinstudyidp.navigation.Screen
+import de.alexander13oster.easycomposebarcodescanner.AnalyzerType
+import de.alexander13oster.easycomposebarcodescanner.CameraScreen
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
+var analyzerType = AnalyzerType.BARCODE
+var showdialogCamerScreen by mutableStateOf(false)
 
 @SuppressLint("SuspiciousIndentation", "UnrememberedMutableState")
 @Composable
 fun TaskScreen(navController: NavController) {
+
+
+
+//        if (analyzerType == AnalyzerType.UNDEFINED) {
+//            Column {
+//                Button(onClick = { analyzerType = AnalyzerType.BARCODE }) {
+//                    Text(text = "BARCODE")
+//                }
+//                Button(onClick = { analyzerType = AnalyzerType.TEXT }) {
+//                    Text(text = "TEXT")
+//                }
+//            }
+//        } else {
+//            CameraScreen(analyzerType)
+//        }
+
 
     Column(
         modifier = Modifier
@@ -129,11 +151,17 @@ fun TaskScreen(navController: NavController) {
         val storeId = PrefHelper().getIntFromShared(SharedPrefKey.storeid)
 
 
+        if (showdialogCamerScreen) {
+            MyDialog(onDismiss = { showdialogCamerScreen = false }, navController)
+        }
+
         val king = OrdersViewModel()
         if (accessToken != null) {
-            king.fetchOrders(accessToken, storeId.toString())
-            OrdersScreen(king)
+            king.fetchOrders(accessToken, storeId.toString(), navController)
+            OrdersScreen(king, navController)
         }
+
+
 
 
 
@@ -141,8 +169,29 @@ fun TaskScreen(navController: NavController) {
 
 
 }
+
+
 @Composable
-fun OrderTable(orderResponse: OrderResponse) {
+fun MyDialog(onDismiss: () -> Unit, navController: NavController) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Color.White,
+            elevation = 8.dp,
+            modifier = Modifier
+                .width(300.dp)  // Set the width
+                .height(200.dp) // Set the height
+                .padding(16.dp) // Add padding inside the Surface
+
+        ) {
+           CameraScreen(navController)
+        }
+    }
+}
+
+
+@Composable
+fun OrderTable(orderResponse: OrderResponse, navController: NavController) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // Table Header
         Row(
@@ -161,9 +210,9 @@ fun OrderTable(orderResponse: OrderResponse) {
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                TableCellButton(content = order.order_id, modifier = Modifier.weight(1f))
+                TableCellButton(content = order.order_id, modifier = Modifier.weight(1f), navController= navController)
                 TableCell(content = order.name, modifier = Modifier.weight(1f))
-                TableCell(content = "₹${order.amt}", modifier = Modifier.weight(1f))
+                TableCell(content = "₹${order.totalamt}", modifier = Modifier.weight(1f))
                 TableCell(content = order.payment_status, modifier = Modifier.weight(1f))
             }
         }
@@ -183,9 +232,14 @@ fun TableCell(content: String, isHeader: Boolean = false, modifier: Modifier = M
 }
 
 @Composable
-fun TableCellButton(content: String, isHeader: Boolean = false, modifier: Modifier = Modifier) {
+fun TableCellButton(content: String, isHeader: Boolean = false, modifier: Modifier = Modifier, navController: NavController) {
     Button(
-        onClick = { /* Handle button click */ }, // You can provide action here
+        onClick = {
+            PrefHelper().setStringToShared(SharedPrefKey.orderid, content)
+            navController.navigate(Screen.BarcodeCamerScreen.route)
+            ToShipScreenSaveButtonText = "Save"
+                   // showdialogCamerScreen = true
+                  }, // You can provide action here
         modifier = modifier.padding(8.dp)
     ) {
         Text(
@@ -211,7 +265,7 @@ fun PreviewMainScreen() {
 
 
 @Composable
-fun OrdersScreen(viewModel: OrdersViewModel) {
+fun OrdersScreen(viewModel: OrdersViewModel, navController: NavController) {
     // Using state to trigger recomposition when the data changes
     val orderResponse by viewModel.orderResponseState.collectAsState()
 
@@ -221,7 +275,7 @@ fun OrdersScreen(viewModel: OrdersViewModel) {
             // Display data from orderResponse
 //            Text("Message: ${orderResponse!!.message}")
 
-            OrderTable(orderResponse = orderResponse!!)
+            OrderTable(orderResponse = orderResponse!!,navController= navController)
             // You can create more UI elements to display other parts of `orderResponse`
         } else {
             // Show a loading state or error
@@ -237,7 +291,7 @@ class OrdersViewModel : ViewModel() {
     val orderResponseState: StateFlow<OrderResponse?> = _orderResponseState
 
     // Function to fetch orders from the API
-    fun fetchOrders(accessToken: String, storeId: String) {
+    fun fetchOrders(accessToken: String, storeId: String, navController: NavController) {
         try {
             RetrofitInstance.api.getOrders(accessToken, storeId, "3").enqueue(object : Callback<OrderResponse> {
 
@@ -251,9 +305,11 @@ class OrdersViewModel : ViewModel() {
                                 Log.d("Orders", "Message: ${dashboardResponse.message}")
                             }
                         } else {
+                            navController.navigate(Screen.SignUp.route)
                             Log.e("Orders", "Response body is null")
                         }
                     } else {
+                        navController.navigate(Screen.SignUp.route)
                         Log.e("Orders", "Failed to fetch dashboard: ${response.code()}")
                     }
                 }

@@ -23,6 +23,9 @@ sealed class Screen(val route: String) {
         fun createRoute(mobile: String) = "address_details/$mobile"
     }
     object EducationalDetail : Screen("educational_detail")
+    object BarcodeCamerScreen : Screen("barcode_cameracreen")
+
+    object ToShipScreen : Screen("toshipscreen")
 
 
 }

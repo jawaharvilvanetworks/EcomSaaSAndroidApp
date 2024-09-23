@@ -7,6 +7,8 @@ object SharedPrefKey {
     var applicationName: String = "JetComposeLoginUI"
     var accessToken: String = "accessToken"
     var storeid: String = "storeid"
+    var orderid: String = "orderid"
+    var barcodeno: String = "barcodeno"
 
     var paymentStatus: String = "paymentStatus"
 }

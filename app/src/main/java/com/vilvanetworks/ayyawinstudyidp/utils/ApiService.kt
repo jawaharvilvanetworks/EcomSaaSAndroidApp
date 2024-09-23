@@ -26,6 +26,16 @@ interface ApiService {
         @Field("orderstatus") orderStatus: String
     ): Call<OrderResponse>
 
+    @FormUrlEncoded
+    @POST(AppKeys.ORDERSUPDATEPACKED)
+    fun orderPackedUpdate(
+        @Header("Authorization") token: String,
+        @Field("storeid") storeId: String,
+        @Field("order_id") orderId: String,
+        @Field("courier") courier: Int,
+    @Field("tracking_no") trackingNo: String
+    ): Call<OrderResponse>
+
     @POST(AppKeys.VERIFYOTP)
     fun verifyotp(@Body user: Any): Call<UserAuthResp>
 

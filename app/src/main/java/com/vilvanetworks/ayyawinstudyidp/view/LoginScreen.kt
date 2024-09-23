@@ -160,7 +160,7 @@ fun LoginScreen(navController: NavController) {
 //                        )
 //                    )
 
-                    var phonenumber by remember { mutableStateOf("Meesakar") }
+                    var phonenumber by remember { mutableStateOf("TamiTAdmin") }
                     var phonenumbererror by remember { mutableStateOf("Please enter valid user id.") }
                     var showhidephonenumber by remember { mutableStateOf(false) }
                     var showhidepassword by remember { mutableStateOf(false) }
@@ -169,7 +169,7 @@ fun LoginScreen(navController: NavController) {
                     var showhideregmob by remember { mutableStateOf(false) }
                     var showhideotpreq by remember { mutableStateOf(false) }
                     var showhidespinner by remember { mutableStateOf(false) }
-                    var password by remember { mutableStateOf("messakar@123") }
+                    var password by remember { mutableStateOf("tt123456789") }
                     var passworderror by remember { mutableStateOf("Please enter valid password.") }
 
                     TextField(

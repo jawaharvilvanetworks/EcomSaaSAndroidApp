@@ -248,7 +248,7 @@ fun HeaderHome() {
 fun DashboardCard(title: String, value: String) {
     Card(
         modifier = Modifier
-            .width(180.dp)
+            .width(150.dp)
             .height(140.dp),
         elevation = 8.dp,
         shape = RoundedCornerShape(8.dp)
@@ -320,9 +320,11 @@ fun pageInit(navController: NavController) {
                             Log.d("Dashboard", "Message: ${dashboardResponse.message}")
                             Log.d("Dashboard", "Message: ${dashboardResponse}")
                         } else {
+                            navController.navigate(Screen.SignUp.route)
                             Log.e("Dashboard", "Response body is null")
                         }
                     } else {
+                        navController.navigate(Screen.SignUp.route)
                         Log.e("Dashboard", "Failed to fetch dashboard: ${response.code()}")
                     }
                 }
